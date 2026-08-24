@@ -49,14 +49,12 @@
   .btn-primary { background: var(--accent); color: #fff; box-shadow: 0 2px 8px rgba(26,58,92,.2); }
   .btn-primary:hover { background: #142d4a; }
   .btn-primary:disabled { background: #8FA5BF; cursor: not-allowed; transform: none; }
-  .btn-gold { background: var(--accent2); color: #fff; box-shadow: 0 2px 8px rgba(200,169,81,.3); }
-  .btn-gold:hover { background: #B8963C; }
-  .btn-gold:disabled { background: #D4C08A; cursor: not-allowed; transform: none; }
+  .btn-gold { background: var(--accent2); color: #fff; }
   .btn-outline { background: transparent; color: var(--accent); border: 1.5px solid var(--accent); }
   .btn-outline:hover { background: var(--accent-light); }
-  .btn-green { background: var(--success); color: #fff; box-shadow: 0 2px 8px rgba(45,122,79,.2); }
+  .btn-green { background: var(--success); color: #fff; }
   .btn-green:hover { background: #236040; }
-  .btn-green:disabled { background: #7BB89A; cursor: not-allowed; transform: none; }
+  .btn-green:disabled { background: #7BB89A; cursor: not-allowed; }
   .actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 20px; }
   .notice { padding: 10px 14px; border-radius: 8px; font-size: 0.81rem; margin-top: 10px; display: flex; align-items: flex-start; gap: 7px; }
   .notice-info { background: var(--accent-light); color: var(--accent); }
@@ -75,10 +73,6 @@
   @keyframes spin { to { transform: rotate(360deg); } }
   #toast { position: fixed; bottom: 22px; right: 22px; background: var(--accent); color: #fff; padding: 11px 18px; border-radius: 10px; font-size: 0.86rem; font-weight: 600; box-shadow: 0 4px 16px rgba(0,0,0,.2); transform: translateY(80px); opacity: 0; transition: all .3s ease; z-index: 100; }
   #toast.show { transform: translateY(0); opacity: 1; }
-  .config-row { display: flex; gap: 10px; align-items: flex-end; }
-  .config-row .form-group { flex: 1; margin-bottom: 0; }
-  .divider { height: 1px; background: var(--border); margin: 18px 0; }
-  .tag-correo { display: inline-flex; align-items: center; gap: 5px; background: var(--accent); color: #fff; border-radius: 5px; padding: 3px 8px; font-size: 0.78rem; margin: 2px; }
 </style>
 </head>
 <body>
@@ -107,19 +101,19 @@
     <div class="fields-grid">
       <div class="form-group">
         <label>Refresh Token (permanente)</label>
-        <input type="password" id="refreshToken" placeholder="1000.xxxx..." value="1000.cbfef52ac8621d6560cbb65387e50a7e.3b8d0f0076c2c5ff385e848e1a2ddbb0">
+        <input type="password" id="refreshToken" value="1000.cbfef52ac8621d6560cbb65387e50a7e.3b8d0f0076c2c5ff385e848e1a2ddbb0">
       </div>
       <div class="form-group">
         <label>Client ID</label>
-        <input type="password" id="clientId" placeholder="1000.xxx..." value="1000.JSHBB471DMNVTENZA6DAZQ337YJEUA">
+        <input type="password" id="clientId" value="1000.JSHBB471DMNVTENZA6DAZQ337YJEUA">
       </div>
       <div class="form-group">
         <label>Client Secret</label>
-        <input type="password" id="clientSecret" placeholder="xxxx..." value="6aad2584a2ad67686bb17d8ab0b7177c3d33b06d9c">
+        <input type="password" id="clientSecret" value="6aad2584a2ad67686bb17d8ab0b7177c3d33b06d9c">
       </div>
       <div class="form-group">
         <label>CCO fijo (Tesorería)</label>
-        <input type="text" id="ccoFijo" placeholder="tesoreria@attendo.com">
+        <input type="text" id="ccoFijo" value="tesoreria.attendo@attendo.mx">
       </div>
     </div>
     <button class="btn btn-outline" onclick="probarConexion()" id="btnProbar">🔗 Probar conexión</button>
@@ -127,7 +121,7 @@
   </div>
 </div>
 
-<!-- PASO 1: Excel -->
+<!-- PASO 1 -->
 <div class="card">
   <div class="card-header"><div class="step">1</div><h2>Cargar Excel de liquidaciones</h2></div>
   <div class="card-body">
@@ -141,7 +135,7 @@
   </div>
 </div>
 
-<!-- PASO 2: Cliente -->
+<!-- PASO 2 -->
 <div class="card">
   <div class="card-header"><div class="step">2</div><h2>Seleccionar cliente</h2></div>
   <div class="card-body">
@@ -151,7 +145,7 @@
   </div>
 </div>
 
-<!-- PASO 3: Correos Zoho -->
+<!-- PASO 3 -->
 <div class="card">
   <div class="card-header"><div class="step">3</div><h2>Correos desde Zoho CRM</h2></div>
   <div class="card-body">
@@ -161,7 +155,7 @@
   </div>
 </div>
 
-<!-- PASO 4: Vista previa y envío -->
+<!-- PASO 4 -->
 <div class="card">
   <div class="card-header"><div class="step">4</div><h2>Vista previa y envío</h2></div>
   <div class="card-body">
@@ -174,35 +168,31 @@
 <div id="toast"></div>
 
 <script>
-// ── Estado ──────────────────────────────────────────────────────────────────
-let clientes = [];
-let clienteSeleccionado = null;
-let correosDisponibles = [];
-let accessToken = '';
-
+// ── Estado ───────────────────────────────────────────────────────────────────
+let clientes = [], clienteSeleccionado = null, correosDisponibles = [], accessToken = '';
 const MESES = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+const PROXY = 'https://corsproxy.io/?';
 
-function fechaInput() { const d = new Date(); return d.toISOString().split('T')[0]; }
+function fechaInput() { return new Date().toISOString().split('T')[0]; }
 function fechaTexto(val) {
   if (!val) { const d = new Date(); return `${d.getDate()} de ${MESES[d.getMonth()]} de ${d.getFullYear()}`; }
   const [y,m,d] = val.split('-').map(Number);
   return `${d} de ${MESES[m-1]} de ${y}`;
 }
-
 function toast(msg, dur=3500) {
   const t = document.getElementById('toast');
   t.textContent = msg; t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), dur);
 }
 
-// ── Zoho: renovar access token ───────────────────────────────────────────────
+// ── Zoho token ───────────────────────────────────────────────────────────────
 async function renovarToken() {
   const rt = document.getElementById('refreshToken').value.trim();
   const ci = document.getElementById('clientId').value.trim();
   const cs = document.getElementById('clientSecret').value.trim();
-  if (!rt || !ci || !cs) throw new Error('Faltan credenciales de Zoho.');
-
-  const resp = await fetch(`https://accounts.zoho.com/oauth/v2/token?grant_type=refresh_token&client_id=${ci}&client_secret=${cs}&refresh_token=${rt}`, { method: 'POST' });
+  if (!rt || !ci || !cs) throw new Error('Faltan credenciales.');
+  const url = `https://accounts.zoho.com/oauth/v2/token?grant_type=refresh_token&client_id=${ci}&client_secret=${cs}&refresh_token=${rt}`;
+  const resp = await fetch(PROXY + encodeURIComponent(url), { method: 'POST' });
   const data = await resp.json();
   if (!data.access_token) throw new Error(data.error || 'No se pudo renovar el token.');
   accessToken = data.access_token;
@@ -212,8 +202,7 @@ async function renovarToken() {
 async function probarConexion() {
   const btn = document.getElementById('btnProbar');
   const status = document.getElementById('zohoStatus');
-  btn.disabled = true;
-  btn.innerHTML = '<span class="spinner"></span> Conectando...';
+  btn.disabled = true; btn.innerHTML = '<span class="spinner"></span> Conectando...';
   try {
     await renovarToken();
     status.innerHTML = '<div class="notice notice-ok">✅ Conexión exitosa con Zoho CRM de Attendo Capital</div>';
@@ -221,35 +210,27 @@ async function probarConexion() {
   } catch(e) {
     status.innerHTML = `<div class="notice notice-err">❌ ${e.message}</div>`;
   }
-  btn.disabled = false;
-  btn.innerHTML = '🔗 Probar conexión';
+  btn.disabled = false; btn.innerHTML = '🔗 Probar conexión';
 }
 
-// ── Buscar correos en Zoho ───────────────────────────────────────────────────
+// ── Zoho búsqueda ────────────────────────────────────────────────────────────
 async function buscarCorreosZoho(numContrato) {
   if (!accessToken) await renovarToken();
+  const headers = { 'Authorization': `Zoho-oauthtoken ${accessToken}` };
 
-  // 1. Buscar la cuenta por número de contrato
-  const r1 = await fetch(`https://www.zohoapis.com/crm/v2/Accounts/search?word=${encodeURIComponent(numContrato)}&fields=Account_Name,id`, {
-    headers: { 'Authorization': `Zoho-oauthtoken ${accessToken}` }
-  });
+  const u1 = `https://www.zohoapis.com/crm/v2/Accounts/search?word=${encodeURIComponent(numContrato)}&fields=Account_Name,id`;
+  const r1 = await fetch(PROXY + encodeURIComponent(u1), { headers });
   const d1 = await r1.json();
-  if (!d1.data || !d1.data.length) return [];
+  if (!d1.data?.length) return [];
 
-  // Tomar la cuenta que contenga el número de contrato
   const cuenta = d1.data.find(a => a.Account_Name.includes(numContrato));
   if (!cuenta) return [];
 
-  // 2. Buscar contactos de esa cuenta
-  const r2 = await fetch(`https://www.zohoapis.com/crm/v2/Contacts/search?criteria=(Account_Name.id:equals:${cuenta.id})&fields=Full_Name,Email,Account_Name`, {
-    headers: { 'Authorization': `Zoho-oauthtoken ${accessToken}` }
-  });
+  const u2 = `https://www.zohoapis.com/crm/v2/Contacts/search?criteria=(Account_Name.id:equals:${cuenta.id})&fields=Full_Name,Email`;
+  const r2 = await fetch(PROXY + encodeURIComponent(u2), { headers });
   const d2 = await r2.json();
   if (!d2.data) return [];
-
-  return d2.data
-    .filter(c => c.Email)
-    .map(c => ({ nombre: c.Full_Name, email: c.Email }));
+  return d2.data.filter(c => c.Email).map(c => ({ nombre: c.Full_Name, email: c.Email }));
 }
 
 // ── Excel ────────────────────────────────────────────────────────────────────
@@ -279,13 +260,13 @@ function procesarExcel(file) {
       renderSelector();
     } catch(err) {
       document.getElementById('excelStatus').innerHTML =
-        `<div class="notice notice-err">❌ Error al leer el archivo: ${err.message}</div>`;
+        `<div class="notice notice-err">❌ Error: ${err.message}</div>`;
     }
   };
   reader.readAsArrayBuffer(file);
 }
 
-// ── Selector cliente ─────────────────────────────────────────────────────────
+// ── Selector ─────────────────────────────────────────────────────────────────
 function renderSelector() {
   const sec = document.getElementById('clienteSection');
   if (!clientes.length) { sec.innerHTML = '<div class="notice notice-warn">⚠️ No se encontraron clientes AP/CS.</div>'; return; }
@@ -307,10 +288,7 @@ function renderSelector() {
     </div>`;
   document.getElementById('clienteSelect').addEventListener('change', async e => {
     const idx = e.target.value;
-    if (idx === '') {
-      document.getElementById('camposCliente').style.display = 'none';
-      clienteSeleccionado = null; resetCorreos(); resetPreview(); return;
-    }
+    if (idx === '') { document.getElementById('camposCliente').style.display='none'; clienteSeleccionado=null; resetCorreos(); resetPreview(); return; }
     clienteSeleccionado = clientes[parseInt(idx)];
     const esAP = /^AP/i.test(clienteSeleccionado.contrato);
     document.getElementById('camposCliente').style.display = 'block';
@@ -323,7 +301,7 @@ function renderSelector() {
   });
 }
 
-// ── Correos ──────────────────────────────────────────────────────────────────
+// ── Correos ───────────────────────────────────────────────────────────────────
 function resetCorreos() {
   document.getElementById('correosSection').innerHTML =
     '<div class="empty-state"><div class="icon">📬</div><p>Selecciona un cliente para buscar sus correos en Zoho.</p></div>';
@@ -331,15 +309,14 @@ function resetCorreos() {
 
 async function cargarCorreos() {
   const sec = document.getElementById('correosSection');
-  sec.innerHTML = `<div class="notice notice-info"><span class="spinner" style="border-color:rgba(26,58,92,.3);border-top-color:var(--accent)"></span> Buscando en Zoho CRM...</div>`;
+  sec.innerHTML = `<div class="notice notice-info"><span class="spinner" style="border-color:rgba(26,58,92,.3);border-top-color:var(--accent)"></span>&nbsp; Buscando en Zoho CRM...</div>`;
   try {
-    const numContrato = clienteSeleccionado.contrato.replace(' ','%20');
     correosDisponibles = await buscarCorreosZoho(clienteSeleccionado.contrato);
     if (!correosDisponibles.length) {
       sec.innerHTML = `
-        <div class="notice notice-warn">⚠️ No se encontraron correos en Zoho para ${clienteSeleccionado.contrato}. Puedes escribirlo manualmente.</div>
+        <div class="notice notice-warn">⚠️ No se encontraron correos en Zoho para ${clienteSeleccionado.contrato}. Escríbelo manualmente.</div>
         <div class="form-group" style="margin-top:12px">
-          <label>Correo(s) manual(es) — separa con coma si son varios</label>
+          <label>Correo(s) — separa con coma si son varios</label>
           <input type="text" id="correoManual" placeholder="correo@ejemplo.com, otro@ejemplo.com">
         </div>`;
     } else {
@@ -359,7 +336,7 @@ async function cargarCorreos() {
     }
   } catch(err) {
     sec.innerHTML = `
-      <div class="notice notice-err">❌ Error al conectar con Zoho: ${err.message}</div>
+      <div class="notice notice-err">❌ Error Zoho: ${err.message}</div>
       <div class="form-group" style="margin-top:12px">
         <label>Correo(s) manual(es)</label>
         <input type="text" id="correoManual" placeholder="correo@ejemplo.com">
@@ -369,23 +346,17 @@ async function cargarCorreos() {
 
 function obtenerCorreosSeleccionados() {
   const correos = [];
-  // De checkboxes Zoho
-  correosDisponibles.forEach((c,i) => {
-    const chk = document.getElementById(`chk${i}`);
-    if (chk && chk.checked) correos.push(c.email);
-  });
-  // Manual o extra
-  const manual = (document.getElementById('correoManual') || document.getElementById('correoExtra'))?.value?.trim();
-  if (manual) manual.split(',').map(s => s.trim()).filter(Boolean).forEach(e => correos.push(e));
+  correosDisponibles.forEach((c,i) => { const chk = document.getElementById(`chk${i}`); if (chk?.checked) correos.push(c.email); });
+  const extra = (document.getElementById('correoManual') || document.getElementById('correoExtra'))?.value?.trim();
+  if (extra) extra.split(',').map(s=>s.trim()).filter(Boolean).forEach(e => correos.push(e));
   return correos;
 }
 
-// ── Carta ────────────────────────────────────────────────────────────────────
+// ── Carta ─────────────────────────────────────────────────────────────────────
 function generarCarta(cliente, fecha) {
   const esAP = /^AP/i.test(cliente.contrato);
   const lineas = esAP ? [
-    `Querétaro, Qro. a ${fecha}`,``,
-    cliente.nombre.toUpperCase(),``,`PRESENTE.`,``,
+    `Querétaro, Qro. a ${fecha}`,``,cliente.nombre.toUpperCase(),``,`PRESENTE.`,``,
     `ASUNTO. CARTA DE CANCELACIÓN DE ARRENDAMIENTO ${cliente.contrato}`,``,
     `Por medio de la presente, nos dirigimos a usted para informarle que el Contrato de Arrendamiento ${cliente.contrato} ha CONCLUIDO.`,``,
     `Como resultado de esto damos por cerrado su expediente satisfactoriamente.`,``,
@@ -393,8 +364,7 @@ function generarCarta(cliente, fecha) {
     `Sin más por el momento, quedo a sus órdenes para cualquier duda que tenga al respecto.`,``,
     `Atentamente`,``,`Iñigo González de Cosio Corredor`,``,`Representante Legal`
   ] : [
-    `Querétaro, Qro. a ${fecha}`,``,
-    cliente.nombre.toUpperCase(),``,`PRESENTE.`,``,
+    `Querétaro, Qro. a ${fecha}`,``,cliente.nombre.toUpperCase(),``,`PRESENTE.`,``,
     `ASUNTO. CARTA DE CANCELACIÓN DE CREDITO ${cliente.contrato}`,``,
     `Por medio de la presente, nos dirigimos a usted para informarle que el Contrato de crédito ${cliente.contrato} ha CONCLUIDO.`,``,
     `Como resultado de esto damos por cerrado su expediente.`,``,
@@ -405,7 +375,6 @@ function generarCarta(cliente, fecha) {
   return { esAP, lineas };
 }
 
-// ── Vista previa ─────────────────────────────────────────────────────────────
 function resetPreview() {
   document.getElementById('previewSection').innerHTML =
     '<div class="empty-state"><div class="icon">📄</div><p>Selecciona un cliente para ver la carta.</p></div>';
@@ -415,14 +384,12 @@ function actualizarPreview() {
   if (!clienteSeleccionado) return;
   const fecha = fechaTexto(document.getElementById('campoFecha')?.value);
   const { esAP, lineas } = generarCarta(clienteSeleccionado, fecha);
-
   const htmlLineas = lineas.map((l,i) => {
     if (i===2) return `<strong>${l}</strong>`;
     if (i===6) return `<strong>${l}</strong>`;
     if (l.includes('CONCLUIDO')) return l.replace('CONCLUIDO','<strong>CONCLUIDO</strong>');
     return l || '&nbsp;';
   }).join('\n');
-
   document.getElementById('previewSection').innerHTML = `
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
       <span style="font-size:.82rem;font-weight:600;color:var(--muted)">Tipo:</span>
@@ -431,40 +398,38 @@ function actualizarPreview() {
     <div class="carta-preview">${htmlLineas}</div>
     <div class="actions">
       <button class="btn btn-primary" onclick="descargarWord()">📄 Descargar carta Word</button>
-      <button class="btn btn-green" onclick="abrirOutlook()" id="btnOutlook">✉️ Abrir en Outlook</button>
+      <button class="btn btn-green" onclick="abrirOutlook()">✉️ Abrir en Outlook</button>
     </div>
     <div class="notice notice-info" style="margin-top:14px">
-      ℹ️ Descarga la carta Word, luego abre Outlook — el correo se abrirá con asunto, cuerpo y destinatarios listos. Solo adjunta la carta y la factura.
+      ℹ️ Descarga la carta Word primero, luego da clic en "Abrir en Outlook" — el correo se abre listo con asunto, destinatarios y cuerpo. Solo adjunta la carta y la factura.
     </div>`;
 }
 
-// ── Descargar Word ───────────────────────────────────────────────────────────
+// ── Descargar Word ────────────────────────────────────────────────────────────
 async function descargarWord() {
   if (!clienteSeleccionado) return;
   const fecha = fechaTexto(document.getElementById('campoFecha')?.value);
   const { lineas } = generarCarta(clienteSeleccionado, fecha);
   const { Document, Paragraph, TextRun, Packer } = docx;
-
   const parrafos = lineas.map((l,i) => {
     if (l === '') return new Paragraph({ children:[new TextRun('')] });
-    const bold = i===2 || i===4 || i===6;
+    const bold = i===2||i===4||i===6;
     const runs = [];
     if (i===6) {
-      const partes = l.split(clienteSeleccionado.contrato);
-      runs.push(new TextRun({text: partes[0], bold:true, size:24}));
-      runs.push(new TextRun({text: clienteSeleccionado.contrato, bold:true, size:24}));
+      const p = l.split(clienteSeleccionado.contrato);
+      runs.push(new TextRun({text:p[0],bold:true,size:24}));
+      runs.push(new TextRun({text:clienteSeleccionado.contrato,bold:true,size:24}));
     } else if (l.includes('CONCLUIDO')) {
       const p = l.split('CONCLUIDO');
-      runs.push(new TextRun({text:p[0], size:24}));
-      runs.push(new TextRun({text:'CONCLUIDO', bold:true, size:24}));
-      if (p[1]) runs.push(new TextRun({text:p[1], size:24}));
+      runs.push(new TextRun({text:p[0],size:24}));
+      runs.push(new TextRun({text:'CONCLUIDO',bold:true,size:24}));
+      if (p[1]) runs.push(new TextRun({text:p[1],size:24}));
     } else {
-      runs.push(new TextRun({text:l, bold, size:24}));
+      runs.push(new TextRun({text:l,bold,size:24}));
     }
-    return new Paragraph({ children: runs, spacing:{after: i===0?200:i>=16?0:120} });
+    return new Paragraph({children:runs, spacing:{after:i===0?200:120}});
   });
-
-  const doc = new Document({ sections:[{ properties:{ page:{ margin:{top:1440,right:1440,bottom:1440,left:1440} } }, children:parrafos }] });
+  const doc = new Document({sections:[{properties:{page:{margin:{top:1440,right:1440,bottom:1440,left:1440}}},children:parrafos}]});
   const blob = await Packer.toBlob(doc);
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
@@ -473,24 +438,18 @@ async function descargarWord() {
   toast('✅ Carta descargada');
 }
 
-// ── Abrir Outlook ────────────────────────────────────────────────────────────
+// ── Abrir Outlook ─────────────────────────────────────────────────────────────
 function abrirOutlook() {
   if (!clienteSeleccionado) return;
   const correos = obtenerCorreosSeleccionados();
   const cco = document.getElementById('ccoFijo').value.trim();
   const esAP = /^AP/i.test(clienteSeleccionado.contrato);
-  const contrato = clienteSeleccionado.contrato;
-
-  const asunto = `CARTA DE CANCELACION ${contrato}`;
+  const asunto = `CARTA DE CANCELACION ${clienteSeleccionado.contrato}`;
   const cuerpo = esAP
     ? `Buen día.\n\nAdjunto encontrará la carta de cancelación de su Arrendamiento. Finalizado satisfactoriamente.\n\nQue tenga excelente día.\n\nSaludos.`
     : `Buen día.\n\nAdjunto encontrará la carta de cancelación de su Crédito. Finalizado satisfactoriamente.\n\nQue tenga excelente día.\n\nSaludos.`;
-
-  if (!correos.length) {
-    toast('⚠️ No hay correos seleccionados', 3000); return;
-  }
-
-  const mailto = `mailto:${correos.join(',')}?subject=${encodeURIComponent(asunto)}&body=${encodeURIComponent(cuerpo)}${cco ? '&bcc='+encodeURIComponent(cco) : ''}`;
+  if (!correos.length) { toast('⚠️ No hay correos seleccionados'); return; }
+  const mailto = `mailto:${correos.join(',')}?subject=${encodeURIComponent(asunto)}&body=${encodeURIComponent(cuerpo)}${cco?'&bcc='+encodeURIComponent(cco):''}`;
   window.location.href = mailto;
   toast('✉️ Abriendo Outlook...');
 }
