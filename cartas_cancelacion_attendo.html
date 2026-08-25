@@ -193,7 +193,8 @@ function actualizarPreview(){
       '<button class="btn btn-primary" onclick="descargarWord()">📄 Descargar carta Word</button>'+
       '<button class="btn btn-green" onclick="abrirOutlook()">✉️ Abrir en Outlook</button>'+
     '</div>'+
-    '<div class="notice notice-info" style="margin-top:14px">ℹ️ La carta Word se genera con el formato y logo originales. Descárgala, abre Outlook y adjunta la carta y la factura.</div>';
+    '<div id="outlookLink"></div>'+
+    '<div class="notice notice-info" style="margin-top:10px">ℹ️ Descarga la carta Word, luego da clic en "Abrir en Outlook" y adjunta la carta y la factura.</div>';
 }
 
 async function descargarWord(){
@@ -243,8 +244,13 @@ function abrirOutlook(){
   const cuerpo=esAP
     ?'Buen día.\n\nAdjunto encontrará la carta de cancelación de su Arrendamiento. Finalizado satisfactoriamente.\n\nQue tenga excelente día.\n\nSaludos.'
     :'Buen día.\n\nAdjunto encontrará la carta de cancelación de su Crédito. Finalizado satisfactoriamente.\n\nQue tenga excelente día.\n\nSaludos.';
-  window.location.href='mailto:'+correo+'?subject='+encodeURIComponent(asunto)+'&body='+encodeURIComponent(cuerpo)+'&bcc='+encodeURIComponent(CCO);
-  toast('✉️ Abriendo Outlook...');
+  const mailto='mailto:'+correo+'?subject='+encodeURIComponent(asunto)+'&body='+encodeURIComponent(cuerpo)+'&bcc='+encodeURIComponent(CCO);
+  // Mostrar enlace directo
+  const div=document.getElementById('outlookLink');
+  div.innerHTML='<div class="notice notice-ok" style="margin-top:12px">'+
+    '✉️ <a href="'+mailto+'" style="color:var(--success);font-weight:700;text-decoration:underline">Haz clic aquí para abrir el correo en Outlook</a>'+
+    ' — ya tiene asunto, destinatario y cuerpo listos.</div>';
+  div.scrollIntoView({behavior:'smooth'});
 }
 </script>
 </body>
