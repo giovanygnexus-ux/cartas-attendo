@@ -229,7 +229,7 @@ async function descargarWord(){
     const blob=await zip.generateAsync({type:'blob',mimeType:'application/vnd.openxmlformats-officedocument.wordprocessingml.document'});
     const a=document.createElement('a');
     a.href=URL.createObjectURL(blob);
-    a.download='CARTA_CANCELACION_'+clienteSeleccionado.contrato.replace(' ','_')+'_'+clienteSeleccionado.nombre.split(' ')[0]+'.docx';
+    a.download='CARTA DE CANCELACION '+clienteSeleccionado.contrato+'.docx';
     a.click();
     toast('✅ Carta descargada con formato original');
   }catch(err){toast('❌ Error: '+err.message);console.error(err)}
